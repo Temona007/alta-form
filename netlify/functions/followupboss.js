@@ -103,15 +103,27 @@ exports.handler = async (event, context) => {
 
       // Notes
       case 'addNote':
-        result = await makeFubRequest('/notes', { method: 'POST', body: payload });
+        // Transform 'text' field to 'body' for Follow Up Boss API
+        const notePayload = { ...payload };
+        if (notePayload.text) {
+          notePayload.body = notePayload.text;
+          delete notePayload.text;
+        }
+        result = await makeFubRequest('/notes', { method: 'POST', body: notePayload });
         break;
       case 'getNote':
         result = await makeFubRequest(`/notes/${payload.id}`);
         break;
       case 'updateNote':
+        // Transform 'text' field to 'body' for Follow Up Boss API
+        const updateNotePayload = { ...payload, id: undefined };
+        if (updateNotePayload.text) {
+          updateNotePayload.body = updateNotePayload.text;
+          delete updateNotePayload.text;
+        }
         result = await makeFubRequest(`/notes/${payload.id}`, { 
           method: 'PUT', 
-          body: { ...payload, id: undefined } 
+          body: updateNotePayload 
         });
         break;
       case 'deleteNote':
