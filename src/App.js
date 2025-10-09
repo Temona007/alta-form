@@ -184,6 +184,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
         console.log('Submitting to Follow Up Boss...');
         // Submit to Follow Up Boss
         try {
+          // After creating/finding the person
           const person = await getOrCreatePersonByEmail({
             firstName: formData.personName?.split(' ')[0] || '',
             lastName: formData.personName?.split(' ').slice(1).join(' ') || '',
@@ -194,9 +195,29 @@ import 'bootstrap/dist/css/bootstrap.min.css';
             source: 'Website Form',
           });
 
+          // Build a comprehensive note from all filled fields
+          const lines = [];
+          Object.entries(formData).forEach(([key, value]) => {
+            if (value === undefined || value === null || value === '') return;
+            const label = fieldLabels[key] || key;
+            const display =
+              value instanceof File ? value.name :
+              typeof value === 'boolean' ? (value ? 'Yes' : 'No') :
+              Array.isArray(value) ? value.join(', ') :
+              String(value);
+            lines.push(`${label}: ${display}`);
+          });
+
+          const noteText =
+            `Alta Property Management submission\n` +
+            (formData.address ? `Address: ${formData.address}\n` : '') +
+            `\n` +
+            lines.join('\n');
+
+          // Send note to FUB (Netlify function converts 'text' -> 'body')
           await addNote({
             personId: person.id,
-            text: `Alta Property Management submission received for address: ${formData.address}\n\nProperty Details:\n- Beds: ${formData.bed}\n- Baths: ${formData.bath}\n- Sqft: ${formData.sqft}\n- Furnished: ${formData.furnished}\n- Current Rent: ${formData.currentRent}\n- Lease Start: ${formData.leaseStartDate}\n- Lease End: ${formData.leaseEndDate}`,
+            text: noteText
           });
 
           console.log('Follow Up Boss note added successfully');
