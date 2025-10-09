@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LoadScript, Autocomplete } from '@react-google-maps/api';
+import { Autocomplete } from '@react-google-maps/api';
 import { getOrCreatePersonByEmail, addNote } from './API/followupboss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import AddressInput from './AddressInput';
@@ -86,8 +86,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
     const [autocomplete, setAutocomplete] = useState(null);
 
-    // Libraries required for Google Maps API
-    const libraries = ['places'];
+    // Libraries required for Google Maps API (commented out as not used in current implementation)
+    // const libraries = ['places'];
 
     // Callback when the Autocomplete component loads
     const onLoad = (autocompleteInstance) => {
