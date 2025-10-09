@@ -191,8 +191,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
             email: formData.personEmail,
             phone: formData.personTel,
             tags: ['Alta Lead'],
-            stage: 'New',
-            source: 'Website Form',
+            stage: 'Property Management Lead',
+            source: 'Owners Intake Survey Form',
           });
 
           // Build a comprehensive note from all filled fields
