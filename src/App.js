@@ -1249,7 +1249,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
             
             
-            {showConfirmation && (
+            {/* {showConfirmation && (
               <div className="mt-4 thanks-message">
                 <h4>Thank You!</h4>
                 <p>Your information has been submitted successfully. We will review it and get back to you soon.</p>
@@ -1268,7 +1268,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
             {/* {(!showConfirmation && missedUserData) && (
               <div className="mt-4">
                 <h5>Please enter user information</h5>
