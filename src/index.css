@@ -226,6 +226,86 @@ input[type="text"]:hover {
     color: white !important;
   }
 
+  /* Circle radio button style - hide default radio and create custom circle */
+  .btn-check[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  /* Override old button styles with circle design */
+  .btn-radio,
+  .btn-radio.selected,
+  .btn-radio.unselected {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 0 !important;
+    margin-right: 15px !important;
+    background: transparent !important;
+    border: none !important;
+    color: #1a2a44 !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    cursor: pointer;
+    position: relative;
+    overflow: visible !important;
+    white-space: normal !important;
+    text-align: left !important;
+    vertical-align: middle !important;
+  }
+
+  /* Ensure text content appears after the circle */
+  .btn-radio > * {
+    order: 1;
+  }
+
+  /* Circle created with ::before */
+  .btn-radio::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgb(127, 201, 234);
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+    background-color: rgb(127, 201, 234);
+    transition: all 0.2s ease;
+    position: relative;
+    order: -1;
+  }
+
+  /* White circle in middle - positioned to center in the circle (matching demo) */
+  .btn-radio::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: white;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .btn-radio.selected::before {
+    border-color: rgba(29, 146, 198, 1);
+    background-color: rgba(29, 146, 198, 1);
+  }
+
+  .btn-radio.selected::after {
+    width: 8px;
+    height: 8px;
+    left: 6px;
+    background-color: white;
+  }
+
   .back-btn.submit-btn  {
     margin-right: 10px;
   }
@@ -337,4 +417,63 @@ small.text-danger {
 }
 @media screen and (max-width:325px){
   
+}
+
+/* Demo radio button style - simple circle with text on right */
+.demo-radio-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 10px;
+}
+
+.demo-radio-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.demo-radio-circle {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgb(127, 201, 234);
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  background-color: rgb(127, 201, 234);
+}
+
+/* White circle in middle when not selected */
+.demo-radio-circle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+/* When checked, fill with darker blue and show smaller white dot */
+.demo-radio-input:checked + .demo-radio-circle {
+  border-color: rgba(29, 146, 198, 1);
+  background-color: rgba(29, 146, 198, 1);
+}
+
+.demo-radio-input:checked + .demo-radio-circle::after {
+  width: 8px;
+  height: 8px;
+  background-color: white;
+}
+
+.demo-radio-text {
+  font-size: 16px;
+  color: #1a2a44;
+  user-select: none;
 }

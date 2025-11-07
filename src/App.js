@@ -1041,11 +1041,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                           <input
                             type="radio"
                             className="btn-check"
-                            name="generalCleaning"
+                    name="generalCleaning" 
                             id={optionId}
                             value={option}
                             checked={isSelected}
-                            onChange={handleChange}
+                    onChange={handleChange} 
                           />
                           <label
                             className={`btn-radio ${isSelected ? 'selected' : 'unselected'}`}
@@ -1087,11 +1087,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                           <input
                             type="radio"
                             className="btn-check"
-                            name="painting"
+                    name="painting" 
                             id={optionId}
                             value={option}
                             checked={isSelected}
-                            onChange={handleChange}
+                    onChange={handleChange} 
                           />
                           <label
                             className={`btn-radio ${isSelected ? 'selected' : 'unselected'}`}
@@ -1133,11 +1133,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                           <input
                             type="radio"
                             className="btn-check"
-                            name="floors"
+                    name="floors" 
                             id={optionId}
                             value={option}
                             checked={isSelected}
-                            onChange={handleChange}
+                    onChange={handleChange} 
                           />
                           <label
                             className={`btn-radio ${isSelected ? 'selected' : 'unselected'}`}
@@ -1179,11 +1179,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                           <input
                             type="radio"
                             className="btn-check"
-                            name="appliances"
+                    name="appliances" 
                             id={optionId}
                             value={option}
                             checked={isSelected}
-                            onChange={handleChange}
+                    onChange={handleChange} 
                           />
                           <label
                             className={`btn-radio ${isSelected ? 'selected' : 'unselected'}`}
@@ -1225,11 +1225,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                           <input
                             type="radio"
                             className="btn-check"
-                            name="plumber"
+                    name="plumber" 
                             id={optionId}
                             value={option}
                             checked={isSelected}
-                            onChange={handleChange}
+                    onChange={handleChange} 
                           />
                           <label
                             className={`btn-radio ${isSelected ? 'selected' : 'unselected'}`}
@@ -1271,11 +1271,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                           <input
                             type="radio"
                             className="btn-check"
-                            name="hvac"
+                    name="hvac" 
                             id={optionId}
                             value={option}
                             checked={isSelected}
-                            onChange={handleChange}
+                    onChange={handleChange} 
                           />
                           <label
                             className={`btn-radio ${isSelected ? 'selected' : 'unselected'}`}
@@ -1317,11 +1317,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                           <input
                             type="radio"
                             className="btn-check"
-                            name="miscHandyman"
+                    name="miscHandyman" 
                             id={optionId}
                             value={option}
                             checked={isSelected}
-                            onChange={handleChange}
+                    onChange={handleChange} 
                           />
                           <label
                             className={`btn-radio ${isSelected ? 'selected' : 'unselected'}`}
