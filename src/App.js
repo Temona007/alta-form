@@ -21,7 +21,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
       bed: '',
       bath: '',
       sqft: '',
-      furnished: '',
+      furnished: true,
       unresolvedIssues: false,
       resolvedIssues: false,
       unresolvedIssuesDetails: '',
@@ -46,21 +46,21 @@ import 'bootstrap/dist/css/bootstrap.min.css';
       deskPersonnelNames: '',
       frontDeskPhone: '',
       frontDeskEmail: '',
-      existingContracts: '',
+      existingContracts: false,
       existingContractsDetails: '',
-      generalCleaning: '',
+      generalCleaning: 'None',
       generalCleaningDetails: '',
-      painting: '',
+      painting: 'None',
       paintingDetails: '',
-      floors: '',
+      floors: 'None',
       floorsDetails: '',
-      appliances: '',
+      appliances: 'None',
       appliancesDetails: '',
-      plumber: '',
+      plumber: 'None',
       plumberDetails: '',
-      hvac: '',
+      hvac: 'None',
       hvacDetails: '',
-      miscHandyman: '',
+      miscHandyman: 'None',
       miscHandymanDetails: '',
       insuranceCarrier: '',
       policyNumber: ''
@@ -112,7 +112,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
       if (type === 'radio') {
         setFormData({ 
           ...formData, 
-          [name]: value === 'yes' // Convert radio value to boolean
+          [name]: booleanRadioFields.has(name) ? value === 'yes' : value
         });
       } else {
         // Handle other input types (text, file, etc.)
@@ -128,6 +128,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
     const sharedOptions = ['Building Staff', 'Outside Contractor', 'None'];
+    const booleanRadioFields = new Set(['otherOwner', 'furnished', 'unresolvedIssues', 'resolvedIssues', 'existingContracts']);
 
     const handleSubmit = async(e) => {
       e.preventDefault();
@@ -135,19 +136,20 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
   // Validate fields for the current step
     stepFields[currentStep].forEach((key) => {
-      newEmptyFields[key] = !formData[key] || formData[key] === '';
+      const fieldValue = formData[key];
+      newEmptyFields[key] = fieldValue === '' || fieldValue === null || fieldValue === undefined;
     });
 
     // Handle conditional fields for specific steps
     if (currentStep === 1) {
-      if (formData.unresolvedIssues === 'yes') {
+      if (formData.unresolvedIssues === true) {
         newEmptyFields.unresolvedIssuesDetails = !formData.unresolvedIssuesDetails;
       }
-      if (formData.resolvedIssues === 'yes') {
+      if (formData.resolvedIssues === true) {
         newEmptyFields.resolvedIssuesDetails = !formData.resolvedIssuesDetails;
       }
     } else if (currentStep === 5) {
-      if (formData.existingContracts === 'yes') {
+      if (formData.existingContracts === true) {
         newEmptyFields.existingContractsDetails = !formData.existingContractsDetails;
       }
       ['generalCleaning', 'painting', 'floors', 'appliances', 'plumber', 'hvac', 'miscHandyman'].forEach((field) => {
@@ -163,11 +165,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
   // Check if all required fields in the current step are filled
     const allFilled = stepFields[currentStep].every((key) => !newEmptyFields[key]) &&
     (currentStep !== 1 || (
-      (formData.unresolvedIssues !== 'yes' || formData.unresolvedIssuesDetails) &&
-      (formData.resolvedIssues !== 'yes' || formData.resolvedIssuesDetails)
+      (!formData.unresolvedIssues || formData.unresolvedIssuesDetails) &&
+      (!formData.resolvedIssues || formData.resolvedIssuesDetails)
     )) &&
     (currentStep !== 5 || (
-      (formData.existingContracts !== 'yes' || formData.existingContractsDetails) &&
+      (!formData.existingContracts || formData.existingContractsDetails) &&
       ((formData.generalCleaning !== 'Building Staff' && formData.generalCleaning !== 'Outside Contractor') || formData.generalCleaningDetails) &&
       ((formData.painting !== 'Building Staff' && formData.painting !== 'Outside Contractor') || formData.paintingDetails) &&
       ((formData.floors !== 'Building Staff' && formData.floors !== 'Outside Contractor') || formData.floorsDetails) &&
@@ -302,7 +304,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
       <div className="container py-5">
         <div className='row justify-content-md-center'>
           <div className='col-lg-7'>
-            <h1 className="text-center text-navy mb-4" style={{ color: '#1a2a44' }}>Owners Intake Survey</h1>
+            {/* <h1 className="text-center text-navy mb-4" style={{ color: '#1a2a44' }}>Owners Intake Survey</h1> */}
 
             {/* <AddressInput formData={formData} handleChange={handleChange} /> */}
 
@@ -331,7 +333,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                  {formData.otherOwner === false && (
                     <span>
                     <div className="mb-3">
-                      <label className="form-label">Name</label>
+                      <label className="form-label">Name *</label>
                       <input 
                         type="text" 
                         name="personName" 
@@ -345,7 +347,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                       )}
                     </div>
                     <div className="mb-3">
-                      <label className="form-label">Email</label>
+                      <label className="form-label">Email *</label>
                       <input 
                         type="email" 
                         name="personEmail" 
@@ -359,7 +361,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                       )}
                     </div>
                     <div className="mb-3">
-                      <label className="form-label">Phone Number</label>
+                      <label className="form-label">Phone Number *</label>
                       <input 
                         type="tel" 
                         name="personTel" 
@@ -373,7 +375,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                       )}
                     </div>
                     <div className="mb-3">
-                      <label className="form-label">Contact Person Role</label>
+                      <label className="form-label">Contact Person Role *</label>
                       <select 
                         name="role" 
                         value={formData.role} 
@@ -397,7 +399,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                 {formData.otherOwner === true && (
                   <div>
                    <div className="mb-3">
-                    <label className="form-label">Contact person Name</label>
+                    <label className="form-label">Contact person Name *</label>
                     <input 
                       type="text" 
                       name="contactNameOtherThanOwner" 
@@ -411,7 +413,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                     )}
                   </div>
                 <div className="mb-3">
-                  <label className="form-label">Contact person Email</label>
+                  <label className="form-label">Contact person Email *</label>
                   <input 
                     type="email" 
                     name="contactEmailOtherThanOwner" 
@@ -425,7 +427,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                   )}
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Contact person Phone Number</label>
+                  <label className="form-label">Contact person Phone Number *</label>
                   <input 
                     type="tel" 
                     name="contactTelOtherThanOwner" 
@@ -458,7 +460,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
               <div className={`card-body ${currentStep === 1 ? 'show' : 'hide'}`}>
                 <div className="row">
                   <div className="mb-3 col-md-7">
-                    <label className="form-label">Address</label>
+                    <label className="form-label">Address *</label>
                     <Autocomplete
                       onLoad={onLoad}
                       onPlaceChanged={onPlaceChanged}
@@ -493,7 +495,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                 </div>
                 <div className="row justify-content-between">
                   <div className="mb-3 col-auto" id='bed'>
-                    <label className="form-label">Bed</label> 
+                    <label className="form-label">Bed *</label> 
                     <input 
                       type="text" 
                       name="bed" 
@@ -506,7 +508,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                     )}
                   </div>
                   <div className="mb-3 col-auto" id='bath'>
-                    <label className="form-label">Bath</label> 
+                    <label className="form-label">Bath *</label> 
                     <input 
                       type="text" 
                       name="bath" 
@@ -519,7 +521,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                     )}
                   </div>
                   <div className="mb-3 col-auto" id='sqft'>
-                    <label className="form-label">Sqft</label> 
+                    <label className="form-label">Sqft *</label> 
                     <input 
                       type="text" 
                       name="sqft" 
@@ -533,40 +535,92 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                   </div>
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Furnished?</label>
-                  <select 
+                  <label className="form-label">Furnished? *</label>
+                  <div className="d-flex gap-3">
+                    <div>
+                      <input
+                        type="radio"
+                        className="btn-check"
                     name="furnished" 
-                    value={formData.furnished} 
+                        id="furnished-yes"
+                        value="yes"
+                        checked={formData.furnished === true}
                     onChange={handleChange} 
-                    className="form-select"
-                  >
-                    <option value="">Select...</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
+                      />
+                      <label
+                        className={`btn-radio ${formData.furnished === true ? 'selected' : 'unselected'}`}
+                        htmlFor="furnished-yes"
+                      >
+                        Yes
+                      </label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        className="btn-check"
+                        name="furnished"
+                        id="furnished-no"
+                        value="no"
+                        checked={formData.furnished === false}
+                        onChange={handleChange}
+                      />
+                      <label
+                        className={`btn-radio ${formData.furnished === false ? 'selected' : 'unselected'}`}
+                        htmlFor="furnished-no"
+                      >
+                        No
+                      </label>
+                    </div>
+                  </div>
                   {emptyFields.furnished && (
                     <small className="text-danger">Please select whether the property is furnished</small>
                   )}
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Unresolved Maintenance Issues</label>
-                  <select 
+                  <label className="form-label">Unresolved Maintenance Issues *</label>
+                  <div className="d-flex gap-3">
+                    <div>
+                      <input
+                        type="radio"
+                        className="btn-check"
                     name="unresolvedIssues" 
-                    value={formData.unresolvedIssues} 
+                        id="unresolvedIssues-yes"
+                        value="yes"
+                        checked={formData.unresolvedIssues === true}
                     onChange={handleChange} 
-                    className="form-select"
-                  >
-                    <option value="">Select...</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
+                      />
+                      <label
+                        className={`btn-radio ${formData.unresolvedIssues === true ? 'selected' : 'unselected'}`}
+                        htmlFor="unresolvedIssues-yes"
+                      >
+                        Yes
+                      </label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        className="btn-check"
+                        name="unresolvedIssues"
+                        id="unresolvedIssues-no"
+                        value="no"
+                        checked={formData.unresolvedIssues === false}
+                        onChange={handleChange}
+                      />
+                      <label
+                        className={`btn-radio ${formData.unresolvedIssues === false ? 'selected' : 'unselected'}`}
+                        htmlFor="unresolvedIssues-no"
+                      >
+                        No
+                      </label>
+                    </div>
+                  </div>
                    {emptyFields.unresolvedIssues && (
                     <small className="text-danger">Please select if there are any unresolved maintenance issues</small>
                   )}
                 </div>
-                {formData.unresolvedIssues === 'yes' && (
+                {formData.unresolvedIssues === true && (
                   <div className="mb-3">
-                    <label className="form-label">Maintenance Issues Details</label>
+                    <label className="form-label">Maintenance Issues Details *</label>
                     <textarea 
                       name="unresolvedIssuesDetails" 
                       value={formData.unresolvedIssuesDetails} 
@@ -579,23 +633,49 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                   </div>
                 )}
                 <div className="mb-3">
-                  <label className="form-label">Resolved Maintenance Issues</label>
-                  <select 
+                  <label className="form-label">Resolved Maintenance Issues *</label>
+                  <div className="d-flex gap-3">
+                    <div>
+                      <input
+                        type="radio"
+                        className="btn-check"
                     name="resolvedIssues" 
-                    value={formData.resolvedIssues} 
+                        id="resolvedIssues-yes"
+                        value="yes"
+                        checked={formData.resolvedIssues === true}
                     onChange={handleChange} 
-                    className="form-select"
-                  >
-                    <option value="">Select...</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
+                      />
+                      <label
+                        className={`btn-radio ${formData.resolvedIssues === true ? 'selected' : 'unselected'}`}
+                        htmlFor="resolvedIssues-yes"
+                      >
+                        Yes
+                      </label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        className="btn-check"
+                        name="resolvedIssues"
+                        id="resolvedIssues-no"
+                        value="no"
+                        checked={formData.resolvedIssues === false}
+                        onChange={handleChange}
+                      />
+                      <label
+                        className={`btn-radio ${formData.resolvedIssues === false ? 'selected' : 'unselected'}`}
+                        htmlFor="resolvedIssues-no"
+                      >
+                        No
+                      </label>
+                    </div>
+                  </div>
                   {emptyFields.resolvedIssues && (
                     <small className="text-danger">Please select if there are any resolved maintenance issues</small>
                   )}
-                  {formData.resolvedIssues === 'yes' && (
+                  {formData.resolvedIssues === true && (
                     <div className="mb-3 pt-3">
-                      <label className="form-label">Resolved Maintenance Issues Details</label>
+                      <label className="form-label">Resolved Maintenance Issues Details *</label>
                       <textarea 
                         name="resolvedIssuesDetails" 
                         value={formData.resolvedIssuesDetails} 
@@ -616,7 +696,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
               <div className={`card-header ${currentStep === 2 ? 'show' : 'hide'}`}>Tenant Info</div>
               <div className={`card-body ${currentStep === 2 ? 'show' : 'hide'}`}>
                 <div className="mb-3">
-                  <label className="form-label">Name of Current Leaseholder(s)</label>
+                  <label className="form-label">Name of Current Leaseholder(s) *</label>
                   <input 
                     type="text" 
                     name="tenantName" 
@@ -643,7 +723,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                     )}
                   </div>
                   <div className="mb-3 col-md-6">
-                    <label className="form-label">How many total years of occupancy</label>
+                    <label className="form-label">Total years of occupancy</label>
                     <input 
                       type="text" 
                       name="occupancyYears" 
@@ -677,7 +757,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
               <div className={`card-body ${currentStep === 3 ? 'show' : 'hide'}`}>
                 <div className="row">
                   <div className="mb-3 col-md-6">
-                    <label className="form-label">Start date</label>
+                    <label className="form-label">Start date *</label>
                     <input 
                       type="date" 
                       name="leaseStartDate" 
@@ -690,7 +770,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                     )}
                   </div>
                   <div className="mb-3 col-md-6">
-                    <label className="form-label">End date</label>
+                    <label className="form-label">End date *</label>
                     <input 
                       type="date" 
                       name="leaseEndDate" 
@@ -705,7 +785,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                 </div>
                 <div className="row">
                   <div className="mb-3 col-md-6">
-                    <label className="form-label">Renewable lease?</label>
+                    <label className="form-label">Renewable lease? *</label>
                     <select 
                       name="renewableLease" 
                       value={formData.renewableLease} 
@@ -722,7 +802,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                   </div>
                   {(formData.renewableLease === 'yes' || formData.renewableLease === '' ) && (
                     <div className="mb-3 col-md-6">
-                      <label className="form-label">Renewal notification deadline</label>
+                      <label className="form-label">Renewal notification deadline *</label>
                       <input 
                         type="date" 
                         name="renewalDeadline" 
@@ -738,7 +818,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                 </div>
                 <div className="row">
                   <div className="mb-3 col-md-6">
-                    <label className="form-label">Current Rent</label>
+                    <label className="form-label">Current Rent *</label>
                     <input 
                       type="text" 
                       name="currentRent" 
@@ -796,7 +876,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
               <div className={`card-header ${currentStep === 4 ? 'show' : 'hide'}`}>Building Info</div>
               <div className={`card-body ${currentStep === 4 ? 'show' : 'hide'}`}>
                 <div className="mb-3">
-                  <label className="form-label">Condominium Management Company</label>
+                  <label className="form-label">Condominium Management Company *</label>
                   <input 
                     type="text" 
                     name="condoManager" 
@@ -835,7 +915,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                   )}
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Please enter the property manager's phone number</label>
+                  <label className="form-label">Property manager's phone number</label>
                   <input 
                     type="tel" 
                     name="propertyManagerPhoneNumber" 
@@ -893,24 +973,50 @@ import 'bootstrap/dist/css/bootstrap.min.css';
               <div className={`card-header ${currentStep === 5 ? 'show' : 'hide'}`}>Repairs/Maintenance</div>
               <div className={`card-body ${currentStep === 5 ? 'show' : 'hide'}`}>
                 <div className="mb-3">
-                  <label className="form-label">Existing Service contracts?</label>
-                  <select 
+                  <label className="form-label">Existing Service contracts? *</label>
+                  <div className="d-flex gap-3">
+                    <div>
+                      <input
+                        type="radio"
+                        className="btn-check"
                     name="existingContracts" 
-                    value={formData.existingContracts} 
+                        id="existingContracts-yes"
+                        value="yes"
+                        checked={formData.existingContracts === true}
                     onChange={handleChange} 
-                    className="form-select"
-                  >
-                    <option value="">Select...</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
+                      />
+                      <label
+                        className={`btn-radio ${formData.existingContracts === true ? 'selected' : 'unselected'}`}
+                        htmlFor="existingContracts-yes"
+                      >
+                        Yes
+                      </label>
+                    </div>
+                    <div>
+                      <input
+                        type="radio"
+                        className="btn-check"
+                        name="existingContracts"
+                        id="existingContracts-no"
+                        value="no"
+                        checked={formData.existingContracts === false}
+                        onChange={handleChange}
+                      />
+                      <label
+                        className={`btn-radio ${formData.existingContracts === false ? 'selected' : 'unselected'}`}
+                        htmlFor="existingContracts-no"
+                      >
+                        No
+                      </label>
+                    </div>
+                  </div>
                   {emptyFields.existingContracts && (
                     <small className="text-danger">Please indicate if there are any existing service contracts</small>
                   )}
                 </div>
-                {formData.existingContracts === 'yes' && (
+                {formData.existingContracts === true && (
                     <div className="mb-3">
-                      <label className="form-label">Contract Details</label>
+                      <label className="form-label">Contract Details *</label>
                       <textarea 
                         rows={2}
                         name="existingContractsDetails" 
@@ -925,25 +1031,39 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                   )
                 }
                 <div className="mb-3">
-                  <label className="form-label">General Cleaning</label>
-                  <select 
-                    name="generalCleaning" 
-                    value={formData.generalCleaning} 
-                    onChange={handleChange} 
-                    className="form-select"
-                  >
-                    <option value="">Select...</option>
-                    {sharedOptions.map(option => (
-                      <option key={option} value={option}>{option}</option>
-                    ))}
-                  </select>
+                  <label className="form-label">General Cleaning *</label>
+                  <div className="d-flex flex-wrap gap-3">
+                    {sharedOptions.map(option => {
+                      const optionId = `generalCleaning-${option.toLowerCase().replace(/\s+/g, '-')}`;
+                      const isSelected = formData.generalCleaning === option;
+                      return (
+                        <div key={option}>
+                          <input
+                            type="radio"
+                            className="btn-check"
+                            name="generalCleaning"
+                            id={optionId}
+                            value={option}
+                            checked={isSelected}
+                            onChange={handleChange}
+                          />
+                          <label
+                            className={`btn-radio ${isSelected ? 'selected' : 'unselected'}`}
+                            htmlFor={optionId}
+                          >
+                            {option}
+                          </label>
+                        </div>
+                      );
+                    })}
+                  </div>
                   {emptyFields.generalCleaning && (
                     <small className="text-danger">Please select the status of general cleaning</small>
                   )}
                 </div>
                 {(formData.generalCleaning === 'Building Staff' || formData.generalCleaning === 'Outside Contractor') && (
                   <div className="mb-3">
-                    <label className="form-label">Cleaning Details</label>
+                    <label className="form-label">Cleaning Details *</label>
                     <textarea 
                       rows={2}
                       name="generalCleaningDetails" 
@@ -957,25 +1077,39 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                   </div>
                 )}
                 <div className="mb-3">
-                  <label className="form-label">Painting</label>
-                  <select 
-                    name="painting" 
-                    value={formData.painting} 
-                    onChange={handleChange} 
-                    className="form-select"
-                  >
-                    <option value="">Select...</option>
-                    {sharedOptions.map(option => (
-                      <option key={option} value={option}>{option}</option>
-                    ))}
-                  </select>
+                  <label className="form-label">Painting *</label>
+                  <div className="d-flex flex-wrap gap-3">
+                    {sharedOptions.map(option => {
+                      const optionId = `painting-${option.toLowerCase().replace(/\s+/g, '-')}`;
+                      const isSelected = formData.painting === option;
+                      return (
+                        <div key={option}>
+                          <input
+                            type="radio"
+                            className="btn-check"
+                            name="painting"
+                            id={optionId}
+                            value={option}
+                            checked={isSelected}
+                            onChange={handleChange}
+                          />
+                          <label
+                            className={`btn-radio ${isSelected ? 'selected' : 'unselected'}`}
+                            htmlFor={optionId}
+                          >
+                            {option}
+                          </label>
+                        </div>
+                      );
+                    })}
+                  </div>
                   {emptyFields.painting && (
                     <small className="text-danger">Please select the status of painting services</small>
                   )}
                 </div>
                 {(formData.painting === 'Building Staff' || formData.painting === 'Outside Contractor') && (
                   <div className="mb-3">
-                    <label className="form-label">Painting Details</label>
+                    <label className="form-label">Painting Details *</label>
                     <textarea 
                       rows={2}
                       name="paintingDetails" 
@@ -989,25 +1123,39 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                   </div>
                 )}
                 <div className="mb-3">
-                  <label className="form-label">Floors</label>
-                  <select 
-                    name="floors" 
-                    value={formData.floors} 
-                    onChange={handleChange} 
-                    className="form-select"
-                  >
-                    <option value="">Select...</option>
-                    {sharedOptions.map(option => (
-                      <option key={option} value={option}>{option}</option>
-                    ))}
-                  </select>
+                  <label className="form-label">Floors *</label>
+                  <div className="d-flex flex-wrap gap-3">
+                    {sharedOptions.map(option => {
+                      const optionId = `floors-${option.toLowerCase().replace(/\s+/g, '-')}`;
+                      const isSelected = formData.floors === option;
+                      return (
+                        <div key={option}>
+                          <input
+                            type="radio"
+                            className="btn-check"
+                            name="floors"
+                            id={optionId}
+                            value={option}
+                            checked={isSelected}
+                            onChange={handleChange}
+                          />
+                          <label
+                            className={`btn-radio ${isSelected ? 'selected' : 'unselected'}`}
+                            htmlFor={optionId}
+                          >
+                            {option}
+                          </label>
+                        </div>
+                      );
+                    })}
+                  </div>
                   {emptyFields.floors && (
                     <small className="text-danger">Please select the status of floor maintenance</small>
                   )}
                 </div>
                 {(formData.floors === 'Building Staff' || formData.floors === 'Outside Contractor') && (
                   <div className="mb-3">
-                    <label className="form-label">Floors Details</label>
+                    <label className="form-label">Floors Details *</label>
                     <textarea 
                       rows={2}
                       name="floorsDetails" 
@@ -1021,25 +1169,39 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                   </div>
                 )}
                 <div className="mb-3">
-                  <label className="form-label">Appliances</label>
-                  <select 
-                    name="appliances" 
-                    value={formData.appliances} 
-                    onChange={handleChange} 
-                    className="form-select"
-                  >
-                    <option value="">Select...</option>
-                    {sharedOptions.map(option => (
-                      <option key={option} value={option}>{option}</option>
-                    ))}
-                  </select>
+                  <label className="form-label">Appliances *</label>
+                  <div className="d-flex flex-wrap gap-3">
+                    {sharedOptions.map(option => {
+                      const optionId = `appliances-${option.toLowerCase().replace(/\s+/g, '-')}`;
+                      const isSelected = formData.appliances === option;
+                      return (
+                        <div key={option}>
+                          <input
+                            type="radio"
+                            className="btn-check"
+                            name="appliances"
+                            id={optionId}
+                            value={option}
+                            checked={isSelected}
+                            onChange={handleChange}
+                          />
+                          <label
+                            className={`btn-radio ${isSelected ? 'selected' : 'unselected'}`}
+                            htmlFor={optionId}
+                          >
+                            {option}
+                          </label>
+                        </div>
+                      );
+                    })}
+                  </div>
                   {emptyFields.appliances && (
                     <small className="text-danger">Please select the status of appliance servicing</small>
                   )}
                 </div>
                 {(formData.appliances === 'Building Staff' || formData.appliances === 'Outside Contractor') && (
                   <div className="mb-3">
-                    <label className="form-label">Appliances Details</label>
+                    <label className="form-label">Appliances Details *</label>
                     <textarea 
                       rows={2}
                       name="appliancesDetails" 
@@ -1053,25 +1215,39 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                   </div>
                 )}
                 <div className="mb-3">
-                  <label className="form-label">Plumber</label>
-                  <select 
-                    name="plumber" 
-                    value={formData.plumber} 
-                    onChange={handleChange} 
-                    className="form-select"
-                  >
-                    <option value="">Select...</option>
-                    {sharedOptions.map(option => (
-                      <option key={option} value={option}>{option}</option>
-                    ))}
-                  </select>
+                  <label className="form-label">Plumber *</label>
+                  <div className="d-flex flex-wrap gap-3">
+                    {sharedOptions.map(option => {
+                      const optionId = `plumber-${option.toLowerCase().replace(/\s+/g, '-')}`;
+                      const isSelected = formData.plumber === option;
+                      return (
+                        <div key={option}>
+                          <input
+                            type="radio"
+                            className="btn-check"
+                            name="plumber"
+                            id={optionId}
+                            value={option}
+                            checked={isSelected}
+                            onChange={handleChange}
+                          />
+                          <label
+                            className={`btn-radio ${isSelected ? 'selected' : 'unselected'}`}
+                            htmlFor={optionId}
+                          >
+                            {option}
+                          </label>
+                        </div>
+                      );
+                    })}
+                  </div>
                   {emptyFields.plumber && (
                     <small className="text-danger">Please select the status of plumbing services</small>
                   )}
                 </div>
                 {(formData.plumber === 'Building Staff' || formData.plumber === 'Outside Contractor') && (
                   <div className="mb-3">
-                    <label className="form-label">Plumber Details</label>
+                    <label className="form-label">Plumber Details *</label>
                     <textarea 
                       rows={2}
                       name="plumberDetails" 
@@ -1085,25 +1261,39 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                   </div>
                 )}
                 <div className="mb-3">
-                  <label className="form-label">HVAC</label>
-                  <select 
-                    name="hvac" 
-                    value={formData.hvac} 
-                    onChange={handleChange} 
-                    className="form-select"
-                  >
-                    <option value="">Select...</option>
-                    {sharedOptions.map(option => (
-                      <option key={option} value={option}>{option}</option>
-                    ))}
-                  </select>
+                  <label className="form-label">HVAC *</label>
+                  <div className="d-flex flex-wrap gap-3">
+                    {sharedOptions.map(option => {
+                      const optionId = `hvac-${option.toLowerCase().replace(/\s+/g, '-')}`;
+                      const isSelected = formData.hvac === option;
+                      return (
+                        <div key={option}>
+                          <input
+                            type="radio"
+                            className="btn-check"
+                            name="hvac"
+                            id={optionId}
+                            value={option}
+                            checked={isSelected}
+                            onChange={handleChange}
+                          />
+                          <label
+                            className={`btn-radio ${isSelected ? 'selected' : 'unselected'}`}
+                            htmlFor={optionId}
+                          >
+                            {option}
+                          </label>
+                        </div>
+                      );
+                    })}
+                  </div>
                   {emptyFields.hvac && (
                     <small className="text-danger">Please select the status of HVAC servicing</small>
                   )}
                 </div>
                 {(formData.hvac === 'Building Staff' || formData.hvac === 'Outside Contractor') && (
                   <div className="mb-3">
-                    <label className="form-label">HVAC Details</label>
+                    <label className="form-label">HVAC Details *</label>
                     <textarea 
                       rows={2}
                       name="hvacDetails" 
@@ -1117,25 +1307,39 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                   </div>
                 )}
                 <div className="mb-3">
-                  <label className="form-label">Misc Handyman</label>
-                  <select 
-                    name="miscHandyman" 
-                    value={formData.miscHandyman} 
-                    onChange={handleChange} 
-                    className="form-select"
-                  >
-                    <option value="">Select...</option>
-                    {sharedOptions.map(option => (
-                      <option key={option} value={option}>{option}</option>
-                    ))}
-                  </select>
+                  <label className="form-label">Misc Handyman *</label>
+                  <div className="d-flex flex-wrap gap-3">
+                    {sharedOptions.map(option => {
+                      const optionId = `miscHandyman-${option.toLowerCase().replace(/\s+/g, '-')}`;
+                      const isSelected = formData.miscHandyman === option;
+                      return (
+                        <div key={option}>
+                          <input
+                            type="radio"
+                            className="btn-check"
+                            name="miscHandyman"
+                            id={optionId}
+                            value={option}
+                            checked={isSelected}
+                            onChange={handleChange}
+                          />
+                          <label
+                            className={`btn-radio ${isSelected ? 'selected' : 'unselected'}`}
+                            htmlFor={optionId}
+                          >
+                            {option}
+                          </label>
+                        </div>
+                      );
+                    })}
+                  </div>
                   {emptyFields.miscHandyman && (
                     <small className="text-danger">Please select the status of handyman services</small>
                   )}
                 </div>
                 {(formData.miscHandyman === 'Building Staff' || formData.miscHandyman === 'Outside Contractor') && (
                   <div className="mb-3">
-                    <label className="form-label">Misc Handyman Details</label>
+                    <label className="form-label">Misc Handyman Details *</label>
                     <textarea 
                       rows={2}
                       name="miscHandymanDetails" 
@@ -1154,7 +1358,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
               <div className={`card-header ${(currentStep === 6 && !showConfirmation) ? 'show' : 'hide'}`}>Insurance</div>
               <div className={`card-body ${(currentStep === 6 && !showConfirmation) ? 'show' : 'hide'}`}>
                 <div className="mb-3">
-                  <label className="form-label">Current Owners insurance Carrier</label>
+                  <label className="form-label">Current Owners insurance Carrier *</label>
                   <input 
                     type="text" 
                     name="insuranceCarrier" 
@@ -1167,7 +1371,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
                   )}
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Policy Number</label>
+                  <label className="form-label">Policy Number *</label>
                   <input 
                     type="text" 
                     name="policyNumber" 
@@ -1182,9 +1386,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
               </div>
 
               {/* Thank You Page */}
-              <div className={`card-header ${showConfirmation ? 'show' : 'hide'}`}>Thank You!</div>
+              <div className={`card-header ${showConfirmation ? 'show' : 'hide'}`}>Submission Successful</div>
               <div  className={`card-body ${showConfirmation ? 'show' : 'hide'}`}>
-                <h4>Submission Successful</h4>
                 <p>Your information has been submitted successfully. We will review it and get back to you soon.</p>
               </div>
 
